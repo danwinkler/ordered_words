@@ -5,9 +5,13 @@ from konlpy.tag import Kkma
 from konlpy.utils import pprint
 
 from jnltk.tokenize import SimpleRuleSntenceTokenizer
-from jptokenizer import JPSimpleTokenizer
+from .jptokenizer import JPSimpleTokenizer
 
 class Korean:
+    morph_delimiter = "_|_"
+    code = 'ko'
+    name = 'Korean'
+
     def __init__( self ):
         self.kkma = Kkma()
 
@@ -17,7 +21,14 @@ class Korean:
     def morphs( self, text ):
         return self.kkma.morphs( text )
 
+    def pos( self, text ):
+        return self.kkma.pos( text )
+
 class Japanese:
+    morph_delimiter = "_|_"
+    code = 'jp'
+    name = 'Japanese'
+
     def __init__( self ):
         self.tokenizer = SimpleRuleSntenceTokenizer()
         self.morph_tokenizer = JPSimpleTokenizer()
@@ -56,12 +67,14 @@ def analyse( filename, nla ):
         for i in range( len( sentences ) ):
             if i % 10 == 0:
                 print( "Morph map ", i / len( sentences ) )
+
             sentence = sentences[i]
-            morphs = nla.morphs( sentence )
+            morphs = nla.pos( sentence )
             for morph in morphs:
-                if morph not in morph_map:
-                    morph_map[morph] = []
-                morph_map[morph].append( i )
+                morph_t = nla.morph_delimiter.join( morph )
+                if morph_t not in morph_map:
+                    morph_map[morph_t] = []
+                morph_map[morph_t].append( i )
 
         with open( morph_map_file, 'w', encoding="utf8" ) as f:
             f.write( json.dumps( morph_map, ensure_ascii=False ) )
@@ -77,5 +90,6 @@ def analyse( filename, nla ):
             for morph in morphs:
                 f.write( morph[0] + " " + str(len(morph[1])) + "\n" )
 
-analyse( "texts/hp1_ko.txt", Korean() )
-analyse( "texts/hp1_jp.txt", Japanese() )
+if __name__ == "__main__":
+    analyse( "texts/hp1_ko.txt", Korean() )
+    analyse( "texts/hp1_jp.txt", Japanese() )

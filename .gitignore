@@ -1,3 +1,5 @@
-pdfs/*
+analysis/pdfs/*
 *.pyc
 __pycache__
+
+db.sqlite3
