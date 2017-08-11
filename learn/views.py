@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.db.models import Count
 from django.db.models.functions import Length
 
 from .models import (
     Sentence,
-    Morph
+    Morph,
+    CommonWord
 )
 
 def index( request ):
@@ -25,3 +27,15 @@ class MorphListView( ListView ):
             q = q.filter( language__code=self.request.GET['language'] )
 
         return q
+
+class MorphDetailView( DetailView ):
+    model = Morph
+
+class SentenceDetailView( DetailView ):
+    model = Sentence
+
+    def get_context_data( self, **kwargs ):
+        context = super().get_context_data( **kwargs )
+        common = CommonWord.objects.filter( language=context['sentence'].language ).values_list( 'text', flat=True )
+        context['good_words'] = context['sentence'].morph_set.filter( text__in=common )
+        return context

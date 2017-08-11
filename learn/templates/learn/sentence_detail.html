@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div>
+    <h3>{{sentence.text}}</h3>
+</div>
+
+<h2>Good Words</h2>
+{% for morph in sentence.morph_set.all %}
+    {% if morph.common %}
+        <div>
+            <a href="{% url 'morph_detail' morph.pk %}">
+                {{morph.text}}
+            </a>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<h2>Weird words</h2>
+{% for morph in sentence.morph_set.all %}
+    {% if not morph.common %}
+        <div>
+            <a href="{% url 'morph_detail' morph.pk %}">
+                {{morph.text}}
+            </a>
+        </div>
+    {% endif %}
+{% endfor %}
+
+
+{% endblock %}

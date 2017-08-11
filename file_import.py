@@ -18,7 +18,8 @@ from learn.models import (
     Language,
     Sentence,
     POS,
-    Morph
+    Morph,
+    CommonWord
 )
 
 def import_file( name, lang ):
@@ -110,6 +111,25 @@ def set_pos( name, label, desc, lang ):
         }
     )
 
+def common_words( filename, lang ):
+    print( "CREATING COMMON WORDS FOR " + lang.name )
+    language, created = Language.objects.get_or_create(
+        code = lang.code,
+        name = lang.name
+    )
+
+    with open( filename, encoding="utf8" ) as f:
+        words = json.loads( f.read() )
+
+    CommonWord.objects.filter( language=language ).delete()
+
+    for w in tqdm( words ):
+        cw = CommonWord( text=w[0], desc=w[1], language=language )
+        cw.save()
+        for m in Morph.objects.filter( text=cw.text ).all():
+            m.common = cw
+            m.save()
+
 ##    ##  #######  ########  ########    ###    ##    ##
 ##   ##  ##     ## ##     ## ##         ## ##   ###   ##
 ##  ##   ##     ## ##     ## ##        ##   ##  ####  ##
@@ -120,6 +140,8 @@ def set_pos( name, label, desc, lang ):
 
 set_pos( "NNG", "Plain Noun", "", Korean() )
 set_pos( "NNP", "Proper Noun", "", Korean() )
+
+common_words( "analysis/language/ko/common_words_standard.json", Korean() )
 
 '''
 import_file( "hp1_ko", Korean() )
@@ -138,4 +160,4 @@ import_file( "hp7_ko", Korean() )
 ##    ## ##     ## ##        ##     ## ##   ### ##       ##    ## ##
  ######  ##     ## ##        ##     ## ##    ## ########  ######  ########
 
-import_file( "hp1_jp", Japanese() )
+#import_file( "hp1_jp", Japanese() )

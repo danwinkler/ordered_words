@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div>
+    <h1>{{morph.text}}</h1>
+    <h4>{{morph.pos.name}}</h4>
+</div>
+{% for sentence in morph.sentences.all %}
+<div>
+    <a href="{% url 'sentence_detail' sentence.pk %}">
+        {{sentence.text}}
+    </a>
+</div>
+{% endfor %}
+
+{% endblock %}

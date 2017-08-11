@@ -4,7 +4,9 @@
 
 {% for morph in object_list %}
 <div>
-    <h2>{{morph.text}}</h2>
+    <a href="{% url 'morph_detail' morph.pk %}">
+        <h2>{{morph.text}}</h2>
+    </a>
     <h4>{{morph.pos.name}}</h4>
     <p>Sentences: {{morph.sentences.count}}</p>
 </div>
