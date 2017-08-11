@@ -1,11 +1,20 @@
 import os
 import json
 
+from tqdm import *
+
 from konlpy.tag import Kkma
+from konlpy.tag import Hannanum
 from konlpy.utils import pprint
 
 from jnltk.tokenize import SimpleRuleSntenceTokenizer
-from .jptokenizer import JPSimpleTokenizer
+
+try:
+    from .jptokenizer import JPSimpleTokenizer
+except:
+    from jptokenizer import JPSimpleTokenizer
+
+from Naked.toolshed.shell import muterun_js, execute_js
 
 class Korean:
     morph_delimiter = "_|_"
@@ -14,6 +23,7 @@ class Korean:
 
     def __init__( self ):
         self.kkma = Kkma()
+        self.hannanum = Hannanum()
 
     def sentences( self, text ):
         return self.kkma.sentences( text )
@@ -39,7 +49,19 @@ class Japanese:
     def morphs( self, text ):
         return self.morph_tokenizer.tokenize( text )
 
+    def batch_pos( self, sentences ):
+        temp_file = "jp_pos_temp.json"
+        with open( temp_file, 'w', encoding="utf8" ) as f:
+            f.write( json.dumps( sentences, ensure_ascii=False ) )
+        execute_js( "jp_pos.js" )
+        with open( "jp_pos_temp_out.json", encoding="utf8" ) as f:
+            ret = json.loads( f.read() )
+        os.remove( temp_file )
+        os.remove( "jp_pos_temp_out.json" )
+        return ret
+
 def analyse( filename, nla ):
+    print( "analysing " + filename )
     if not os.path.exists( filename ):
         raise Exception( "Text file " + filename + " doesnt exist." )
 
@@ -64,17 +86,25 @@ def analyse( filename, nla ):
     if not os.path.exists( morph_map_file ):
         morph_map = {}
 
-        for i in range( len( sentences ) ):
-            if i % 10 == 0:
-                print( "Morph map ", i / len( sentences ) )
-
-            sentence = sentences[i]
-            morphs = nla.pos( sentence )
-            for morph in morphs:
-                morph_t = nla.morph_delimiter.join( morph )
-                if morph_t not in morph_map:
-                    morph_map[morph_t] = []
-                morph_map[morph_t].append( i )
+        print( "MORPH MAP" )
+        if hasattr( nla, "batch_pos" ):
+            sentence_pos_map = nla.batch_pos( sentences )
+            for sentence, morphs in sentence_pos_map.items():
+                i = sentences.index( sentence )
+                for morph in morphs:
+                    morph_t = nla.morph_delimiter.join( morph )
+                    if morph_t not in morph_map:
+                        morph_map[morph_t] = []
+                    morph_map[morph_t].append( i )
+        else:
+            for i in tqdm( range( len( sentences ) ) ):
+                sentence = sentences[i]
+                morphs = nla.pos( sentence )
+                for morph in morphs:
+                    morph_t = nla.morph_delimiter.join( morph )
+                    if morph_t not in morph_map:
+                        morph_map[morph_t] = []
+                    morph_map[morph_t].append( i )
 
         with open( morph_map_file, 'w', encoding="utf8" ) as f:
             f.write( json.dumps( morph_map, ensure_ascii=False ) )
@@ -91,5 +121,16 @@ def analyse( filename, nla ):
                 f.write( morph[0] + " " + str(len(morph[1])) + "\n" )
 
 if __name__ == "__main__":
+    #We have our own init_jvm function so that we can start the jvm with more memory
+    from konlpy_jpype_hack import init_jvm
+    init_jvm()
+
     analyse( "texts/hp1_ko.txt", Korean() )
+    analyse( "texts/hp2_ko.txt", Korean() )
+    analyse( "texts/hp3_ko.txt", Korean() )
+    analyse( "texts/hp4_ko.txt", Korean() )
+    analyse( "texts/hp5_ko.txt", Korean() )
+    analyse( "texts/hp6_ko.txt", Korean() )
+    analyse( "texts/hp7_ko.txt", Korean() )
     analyse( "texts/hp1_jp.txt", Japanese() )
+    analyse( "texts/jp_test.txt", Japanese() )

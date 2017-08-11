@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ordered Words</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="{% static "bootstrap/dist/css/bootstrap.css" %}">
+    </head>
+    <body>
+        <div class="content-container container">
+            {% block content %}{% endblock %}
+        </div>
+
+        <script src="{% static "jquery/dist/jquery.js" %}"></script>
+        <script src="{% static "tether/dist/js/tether.js" %}"></script>
+        <script src="{% static "bootstrap/dist/js/bootstrap.js" %}"></script>
+    </body>
+</html>

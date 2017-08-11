@@ -96,6 +96,19 @@ def import_file( name, lang ):
     print( name + "   SAVE" )
     ThroughModel.objects.bulk_create( t_list )
 
+def set_pos( name, label, desc, lang ):
+    language, created = Language.objects.get_or_create(
+        code = lang.code,
+        name = lang.name
+    )
+    POS.objects.update_or_create(
+        name=name,
+        language=language,
+        defaults={
+            'label': label,
+            'desc': desc
+        }
+    )
 
 ##    ##  #######  ########  ########    ###    ##    ##
 ##   ##  ##     ## ##     ## ##         ## ##   ###   ##
@@ -105,10 +118,18 @@ def import_file( name, lang ):
 ##   ##  ##     ## ##    ##  ##       ##     ## ##   ###
 ##    ##  #######  ##     ## ######## ##     ## ##    ##
 
+set_pos( "NNG", "Plain Noun", "", Korean() )
+set_pos( "NNP", "Proper Noun", "", Korean() )
+
+'''
 import_file( "hp1_ko", Korean() )
-
-
-
+import_file( "hp2_ko", Korean() )
+import_file( "hp3_ko", Korean() )
+import_file( "hp4_ko", Korean() )
+import_file( "hp5_ko", Korean() )
+import_file( "hp6_ko", Korean() )
+import_file( "hp7_ko", Korean() )
+'''
       ##    ###    ########     ###    ##    ## ########  ######  ########
       ##   ## ##   ##     ##   ## ##   ###   ## ##       ##    ## ##
       ##  ##   ##  ##     ##  ##   ##  ####  ## ##       ##       ##
@@ -116,3 +137,5 @@ import_file( "hp1_ko", Korean() )
 ##    ## ######### ##        ######### ##  #### ##             ## ##
 ##    ## ##     ## ##        ##     ## ##   ### ##       ##    ## ##
  ######  ##     ## ##        ##     ## ##    ## ########  ######  ########
+
+import_file( "hp1_jp", Japanese() )

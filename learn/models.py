@@ -19,6 +19,8 @@ class Sentence(models.Model):
 
 class POS(models.Model):
     name = models.CharField( max_length=10 )
+    label = models.CharField( max_length=40, blank=True )
+    desc = models.TextField( blank=True )
     language = models.ForeignKey( Language )
 
     def __str__( self ):

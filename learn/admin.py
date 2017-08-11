@@ -13,7 +13,7 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(POS)
 class POSAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'label', 'desc', 'language')
 
 @admin.register(Sentence)
 class SentenceAdmin(admin.ModelAdmin):
