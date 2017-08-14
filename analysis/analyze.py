@@ -125,6 +125,7 @@ if __name__ == "__main__":
     from konlpy_jpype_hack import init_jvm
     init_jvm()
 
+    analyse( "texts/basic_ko.txt", Korean() )
     analyse( "texts/hp1_ko.txt", Korean() )
     analyse( "texts/hp2_ko.txt", Korean() )
     analyse( "texts/hp3_ko.txt", Korean() )

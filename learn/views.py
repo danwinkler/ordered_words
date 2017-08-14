@@ -26,10 +26,28 @@ class MorphListView( ListView ):
         if 'language' in self.request.GET:
             q = q.filter( language__code=self.request.GET['language'] )
 
+        if 'pos' in self.request.GET:
+            q = q.filter( pos__name__startswith=self.request.GET['pos'] )
+
         return q
 
 class MorphDetailView( DetailView ):
     model = Morph
+
+class SentenceListView( ListView ):
+    model = Sentence
+    paginate_by = 50
+
+    def get_queryset( self ):
+        q = Sentence.objects.all()
+
+        if 'language' in self.request.GET:
+            q = q.filter( language__code=self.request.GET['language'] )
+
+        if 'file' in self.request.GET:
+            q = q.filter( filename=self.request.GET['file'] )
+
+        return q
 
 class SentenceDetailView( DetailView ):
     model = Sentence

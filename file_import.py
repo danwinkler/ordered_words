@@ -138,12 +138,14 @@ def common_words( filename, lang ):
 ##   ##  ##     ## ##    ##  ##       ##     ## ##   ###
 ##    ##  #######  ##     ## ######## ##     ## ##    ##
 
+
+
+'''
+
 set_pos( "NNG", "Plain Noun", "", Korean() )
 set_pos( "NNP", "Proper Noun", "", Korean() )
 
 common_words( "analysis/language/ko/common_words_standard.json", Korean() )
-
-'''
 import_file( "hp1_ko", Korean() )
 import_file( "hp2_ko", Korean() )
 import_file( "hp3_ko", Korean() )
@@ -152,6 +154,9 @@ import_file( "hp5_ko", Korean() )
 import_file( "hp6_ko", Korean() )
 import_file( "hp7_ko", Korean() )
 '''
+
+import_file( "basic_ko", Korean() )
+
       ##    ###    ########     ###    ##    ## ########  ######  ########
       ##   ## ##   ##     ##   ## ##   ###   ## ##       ##    ## ##
       ##  ##   ##  ##     ##  ##   ##  ####  ## ##       ##       ##

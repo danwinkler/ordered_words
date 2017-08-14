@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for sentence in object_list %}
+<div>
+    <a href="{% url 'sentence_detail' sentence.pk %}">
+        <h2>{{sentence.text}}</h2>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock %}
