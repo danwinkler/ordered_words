@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^morphs/(?P<pk>\w+)/$', views.MorphDetailView.as_view(), name='morph_detail'),
     url(r'^sentences/$', views.SentenceListView.as_view(), name='sentence_list'),
     url(r'^sentences/(?P<pk>\w+)/$', views.SentenceDetailView.as_view(), name='sentence_detail'),
+
 ]

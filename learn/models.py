@@ -2,16 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Language(models.Model):
-    code = models.CharField( max_length=10 )
-    name = models.TextField()
+    code = models.CharField( max_length=10, unique=True )
+    name = models.TextField( unique=True )
 
     def __str__( self ):
         return self.name
 
 class Sentence(models.Model):
-    text = models.TextField()
+    text = models.TextField( unique=True )
     language = models.ForeignKey( Language )
-    filename = models.CharField( max_length=40 )
     translations = models.ManyToManyField( "Sentence" )
 
     def __str__( self ):
@@ -26,13 +25,8 @@ class POS(models.Model):
     def __str__( self ):
         return self.name
 
-class CommonWord(models.Model):
-    text = models.TextField()
-    desc = models.TextField()
-    language = models.ForeignKey( Language )
-
-    def __str__( self ):
-        return self.text
+    class Meta:
+        unique_together = ("name", "language")
 
 class Morph(models.Model):
     unique_text = models.TextField() # Bass (Fish), Bass (Instrument)
@@ -40,7 +34,6 @@ class Morph(models.Model):
     pos = models.ForeignKey( POS )
     sentences = models.ManyToManyField( Sentence )
     language = models.ForeignKey( Language )
-    common = models.ForeignKey( CommonWord, null=True )
 
     def __str__( self ):
         return self.text

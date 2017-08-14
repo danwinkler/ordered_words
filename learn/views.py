@@ -3,11 +3,13 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.db.models import Count
 from django.db.models.functions import Length
+from django.contrib.auth.decorators import user_passes_test
+
+from learn import language
 
 from .models import (
     Sentence,
     Morph,
-    CommonWord
 )
 
 def index( request ):
@@ -51,9 +53,3 @@ class SentenceListView( ListView ):
 
 class SentenceDetailView( DetailView ):
     model = Sentence
-
-    def get_context_data( self, **kwargs ):
-        context = super().get_context_data( **kwargs )
-        common = CommonWord.objects.filter( language=context['sentence'].language ).values_list( 'text', flat=True )
-        context['good_words'] = context['sentence'].morph_set.filter( text__in=common )
-        return context

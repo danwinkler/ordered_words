@@ -4,8 +4,7 @@ from .models import (
     Language,
     POS,
     Sentence,
-    Morph,
-    CommonWord
+    Morph
 )
 
 @admin.register(Language)
@@ -28,7 +27,3 @@ class MorphAdmin(admin.ModelAdmin):
         return obj.sentences.count()
 
     sentence_count.admin_order_field = 'sentences__count'
-
-@admin.register(CommonWord)
-class CommonWordAdmin(admin.ModelAdmin):
-    list_display = ('text', 'desc')
